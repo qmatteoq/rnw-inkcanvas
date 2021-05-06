@@ -24,5 +24,26 @@ namespace InkCanvasModule
             this.InitializeComponent();
             MyInkCanvas.InkPresenter.InputDeviceTypes = Windows.UI.Core.CoreInputDeviceTypes.Mouse | Windows.UI.Core.CoreInputDeviceTypes.Touch | Windows.UI.Core.CoreInputDeviceTypes.Pen;
         }
+
+
+
+        public string Title
+        {
+            get { return (string)GetValue(TitlePropertyField); }
+            set { SetValue(TitlePropertyField, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for Title.  This enables animation, styling, binding, etc...
+        private static readonly DependencyProperty TitlePropertyField =
+            DependencyProperty.Register("Title", typeof(string), typeof(InkCanvasControl), new PropertyMetadata(string.Empty));
+
+        internal static DependencyProperty TitleProperty
+        {
+            get
+            {
+                return TitlePropertyField;
+            }
+        }
+
     }
 }

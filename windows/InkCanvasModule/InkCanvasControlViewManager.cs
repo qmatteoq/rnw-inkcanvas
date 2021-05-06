@@ -18,6 +18,18 @@ namespace InkCanvasModule
 {
     internal class InkCanvasControlViewManager: AttributedViewManager<InkCanvasControl>
     {
+        [ViewManagerProperty("title")]
+        public void SetTitle(InkCanvasControl view, string value)
+        {
+            if (null!=value)
+            {
+                view.Title = value;
+            }
+            else
+            {
+                view.ClearValue(InkCanvasControl.TitleProperty);
+            }
+        }
 
         [ViewManagerCommand("saveInkToFile")]
         public async Task SaveInkToFile(InkCanvasControl view, IReadOnlyList<string> commandArgs)
@@ -46,34 +58,34 @@ namespace InkCanvasModule
             }
         }
 
-        [ViewManagerCommand("saveInkToBase64")]
-        public async Task SaveInkToBase64(InkCanvasControl view, IReadOnlyList<object> commandArgs)
-        {
-            var inkCanvas = view.FindName("MyInkCanvas") as InkCanvas;
+[ViewManagerCommand("saveInkToBase64")]
+public async Task SaveInkToBase64(InkCanvasControl view, IReadOnlyList<object> commandArgs)
+{
+    var inkCanvas = view.FindName("MyInkCanvas") as InkCanvas;
 
-            string base64String = string.Empty;
+    string base64String = string.Empty;
 
-            CanvasDevice device = CanvasDevice.GetSharedDevice();
-            CanvasRenderTarget renderTarget = new CanvasRenderTarget(device, (int)inkCanvas.ActualWidth, (int)inkCanvas.ActualHeight, 96);
+    CanvasDevice device = CanvasDevice.GetSharedDevice();
+    CanvasRenderTarget renderTarget = new CanvasRenderTarget(device, (int)inkCanvas.ActualWidth, (int)inkCanvas.ActualHeight, 96);
 
-            using (var ds = renderTarget.CreateDrawingSession())
-            {
-                ds.Clear(Colors.White);
-                ds.DrawInk(inkCanvas.InkPresenter.StrokeContainer.GetStrokes());
-            }
+    using (var ds = renderTarget.CreateDrawingSession())
+    {
+        ds.Clear(Colors.White);
+        ds.DrawInk(inkCanvas.InkPresenter.StrokeContainer.GetStrokes());
+    }
 
-            using (InMemoryRandomAccessStream stream = new InMemoryRandomAccessStream())
-            {
-                await renderTarget.SaveAsync(stream, CanvasBitmapFileFormat.Jpeg);
-                var reader = new DataReader(stream.GetInputStreamAt(0));
-                await reader.LoadAsync((uint)stream.Size);
-                byte[] byteArray = new byte[stream.Size];
-                reader.ReadBytes(byteArray);
-                base64String = Convert.ToBase64String(byteArray);
-            }
+    using (InMemoryRandomAccessStream stream = new InMemoryRandomAccessStream())
+    {
+        await renderTarget.SaveAsync(stream, CanvasBitmapFileFormat.Jpeg);
+        var reader = new DataReader(stream.GetInputStreamAt(0));
+        await reader.LoadAsync((uint)stream.Size);
+        byte[] byteArray = new byte[stream.Size];
+        reader.ReadBytes(byteArray);
+        base64String = Convert.ToBase64String(byteArray);
+    }
 
-            InkSaved?.Invoke(view, base64String);         
-        }
+    InkSaved?.Invoke(view, base64String);         
+}
 
 
         [ViewManagerExportedDirectEventTypeConstant]

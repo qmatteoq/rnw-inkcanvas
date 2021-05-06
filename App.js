@@ -65,7 +65,8 @@ class App extends React.Component {
         <Button title="Save ink" onPress={() => {this.saveInk(); }} />
         <Button title="Save ink to base64" onPress={ () => {this.saveInkToBase64();}} />
         <InkCanvas ref={(ref) => { this._inkCanvasRef = ref;}}
-                   style={{ width: 1000, height: 600}}
+                   style={{ width: 1000, height: 800}}
+                   title="Hello world!"
                    onInkSaved={(evt) => {this.onGetInk(evt); }} />
 
         <Image style={{width: 500, height: 400, resizeMode: 'cover'}} source={ {uri: this.state.inkImage}} />
